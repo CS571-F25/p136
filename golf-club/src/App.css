@@ -1,0 +1,52 @@
+.app-container {
+  max-width: 600px;
+  margin: 40px auto;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  background-color: #ffffff;
+  padding: 20px;
+}
+
+h1 {
+  color: #2e7d32;
+  margin-bottom: 20px;
+}
+
+.tee-time-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tee-time-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background-color: #f8f9fa; /* light gray background */
+  color: #333; /* dark text for contrast */
+  border: 1px solid #ddd;
+  transition: background-color 0.2s;
+}
+
+.tee-time-item.available:hover {
+  background-color: #e8f5e9;
+}
+
+.tee-time-item.unavailable {
+  background-color: #f3f3f3;
+  color: #777;
+}
+
+.status {
+  font-weight: bold;
+}
+
+.available .status {
+  color: #2e7d32;
+}
+
+.unavailable .status {
+  color: #c62828;
+}
