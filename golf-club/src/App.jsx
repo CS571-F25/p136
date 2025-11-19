@@ -2,10 +2,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import TeeTimeList from "./components/TeeTimeList";
+import { Link } from "react-router-dom";
+import Navbar from "./components/Navbar";
 
-export default function App() {
+export default function App({
+  loggedIn,
+  setLoggedIn,
+  bookedTeeTimes,
+  setBookedTeeTimes
+}) {
+  
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [loggedIn, setLoggedIn] = useState(false);
 
   const generateTeeTimes = () => {
     const times = [];
@@ -42,67 +49,18 @@ export default function App() {
     setTeeTimes(newTeeTimes);
   };
 
-  return (
+return (
     <div className="min-vh-100 bg-light">
-      {/* NAVBAR */}
-      <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-        <div className="container">
-          <a className="navbar-brand" href="#">
-            Golf Club
-          </a>
-          <div className="collapse navbar-collapse">
-            <div className="navbar-nav ms-auto">
-              <a className="nav-link" href="#">
-                Tee Times
-              </a>
-              {!loggedIn && (
-                <>
-                  <Button
-                    variant="outline-primary"
-                    className="ms-2"
-                    onClick={() => setLoggedIn(true)}
-                  >
-                    Log In
-                  </Button>
-                  <Button variant="primary" className="ms-2">
-                    Sign Up
-                  </Button>
-                </>
-              )}
-              {loggedIn && (
-                <>
-                  <Button variant="outline-primary" className="ms-2">
-                    Manage Tee Times
-                  </Button>
-                  <Button
-                    variant="danger"
-                    className="ms-2"
-                    onClick={() => setLoggedIn(false)}
-                  >
-                    Log Out
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </nav>
 
       {/* DATE NAVIGATION */}
       <div className="d-flex justify-content-center align-items-center gap-2 mt-4 fs-5 fw-semibold">
-        <Button variant="secondary" onClick={() => changeWeek(-1)}>
-          {"<<"}
-        </Button>
-        <Button variant="secondary" onClick={() => changeDay(-1)}>
-          {"<"}
-        </Button>
+        <Button variant="secondary" onClick={() => changeWeek(-1)}>{"<<"}</Button>
+        <Button variant="secondary" onClick={() => changeDay(-1)}>{"<"}</Button>
+
         <span className="mx-2">Tee Times for {currentDate.toDateString()}</span>
-        <Button variant="secondary" onClick={() => changeDay(1)}>
-          {">"}
-        </Button>
-        <Button variant="secondary" onClick={() => changeWeek(1)}>
-          {">>"}
-        </Button>
+
+        <Button variant="secondary" onClick={() => changeDay(1)}>{">"}</Button>
+        <Button variant="secondary" onClick={() => changeWeek(1)}>{">>"}</Button>
       </div>
 
       {/* TEE TIMES LIST */}
@@ -112,6 +70,7 @@ export default function App() {
             Log in or sign up to book a tee time.
           </p>
         )}
+
         <TeeTimeList
           teeTimes={teeTimes}
           onBook={bookTime}
@@ -121,4 +80,5 @@ export default function App() {
     </div>
   );
 }
+
 

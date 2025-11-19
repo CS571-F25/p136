@@ -1,16 +1,53 @@
-import Button from 'react-bootstrap';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 
-export default function Login() {
+export default function Login({ setLoggedIn }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // For now, just log in any email/password
+    setLoggedIn(true);
+    navigate("/"); // redirect to home
+  };
+
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Log In</h1>
+    <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+      <div className="card p-4 shadow" style={{ minWidth: "300px", maxWidth: "400px", width: "100%" }}>
+        <h2 className="text-center mb-4">Log In</h2>
 
-      <form className="flex flex-col gap-3">
-        <input className="border p-2 rounded" placeholder="Email" />
-        <input className="border p-2 rounded" type="password" placeholder="Password" />
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-3" controlId="formEmail">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </Form.Group>
 
-        <Button variant="primary">Log In</Button>
-      </form>
+          <Form.Group className="mb-3" controlId="formPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </Form.Group>
+
+          <Button variant="primary" type="submit" className="w-100">
+            Log In
+          </Button>
+        </Form>
+      </div>
     </div>
   );
 }
