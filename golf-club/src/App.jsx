@@ -1,15 +1,31 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import TeeTimeList from "./components/TeeTimeList";
 
 export default function App() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [loggedIn, setLoggedIn] = useState(false);
 
-  const teeTimes = [
-    { time: "8:00 AM" },
-    { time: "9:10 AM" },
-    { time: "10:20 AM" },
-  ];
+  const generateTeeTimes = () => {
+    const times = [];
+    let hour = 8;
+    let minute = 0;
+    while (hour < 15 || (hour === 15 && minute === 0)) {
+      const timeStr = `${hour}:${minute.toString().padStart(2, "0")} ${
+        hour < 12 ? "AM" : "PM"
+      }`;
+      times.push({ time: timeStr, booked: false });
+      minute += 12;
+      if (minute >= 60) {
+        minute -= 60;
+        hour += 1;
+      }
+    }
+    return times;
+  };
+
+  const [teeTimes, setTeeTimes] = useState(generateTeeTimes());
 
   const changeDay = (offset) => {
     const newDate = new Date(currentDate);
@@ -17,64 +33,92 @@ export default function App() {
     setCurrentDate(newDate);
   };
 
-  const changeWeek = (offset) => {
-    changeDay(offset * 7);
+  const changeWeek = (offset) => changeDay(offset * 7);
+
+  const bookTime = (index) => {
+    if (!loggedIn) return;
+    const newTeeTimes = [...teeTimes];
+    newTeeTimes[index].booked = true;
+    setTeeTimes(newTeeTimes);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800">
-      {/* NAVIGATION BAR */}
-      <nav className="w-full bg-white shadow p-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold">Golf Tee Times</h1>
-        <div className="space-x-4">
-          <Button variant="ghost">Tee Times</Button>
-          {!loggedIn && (
-            <>
-              <Button variant="ghost" onClick={() => setLoggedIn(true)}>Log In</Button>
-              <Button variant="ghost">Sign Up</Button>
-            </>
-          )}
-          {loggedIn && (
-            <>
-              <Button variant="ghost">Manage Tee Times</Button>
-              <Button variant="ghost" onClick={() => setLoggedIn(false)}>Log Out</Button>
-            </>
-          )}
+    <div className="min-vh-100 bg-light">
+      {/* NAVBAR */}
+      <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div className="container">
+          <a className="navbar-brand" href="#">
+            Golf Club
+          </a>
+          <div className="collapse navbar-collapse">
+            <div className="navbar-nav ms-auto">
+              <a className="nav-link" href="#">
+                Tee Times
+              </a>
+              {!loggedIn && (
+                <>
+                  <Button
+                    variant="outline-primary"
+                    className="ms-2"
+                    onClick={() => setLoggedIn(true)}
+                  >
+                    Log In
+                  </Button>
+                  <Button variant="primary" className="ms-2">
+                    Sign Up
+                  </Button>
+                </>
+              )}
+              {loggedIn && (
+                <>
+                  <Button variant="outline-primary" className="ms-2">
+                    Manage Tee Times
+                  </Button>
+                  <Button
+                    variant="danger"
+                    className="ms-2"
+                    onClick={() => setLoggedIn(false)}
+                  >
+                    Log Out
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </nav>
 
       {/* DATE NAVIGATION */}
-      <div className="flex justify-center items-center space-x-4 mt-8">
-        <Button onClick={() => changeWeek(-1)}>{"<<"}</Button>
-        <Button onClick={() => changeDay(-1)}>{"<"}</Button>
-        <h2 className="text-lg font-semibold">
-          {currentDate.toDateString()}
-        </h2>
-        <Button onClick={() => changeDay(1)}>{">"}</Button>
-        <Button onClick={() => changeWeek(1)}>{">>"}</Button>
+      <div className="d-flex justify-content-center align-items-center gap-2 mt-4 fs-5 fw-semibold">
+        <Button variant="secondary" onClick={() => changeWeek(-1)}>
+          {"<<"}
+        </Button>
+        <Button variant="secondary" onClick={() => changeDay(-1)}>
+          {"<"}
+        </Button>
+        <span className="mx-2">Tee Times for {currentDate.toDateString()}</span>
+        <Button variant="secondary" onClick={() => changeDay(1)}>
+          {">"}
+        </Button>
+        <Button variant="secondary" onClick={() => changeWeek(1)}>
+          {">>"}
+        </Button>
       </div>
 
       {/* TEE TIMES LIST */}
-      <div className="max-w-xl mx-auto mt-10 p-4">
+      <div className="container mt-4">
         {!loggedIn && (
-          <p className="text-center text-red-600 font-medium mb-4">
+          <p className="text-center text-danger fw-medium mb-3">
             Log in or sign up to book a tee time.
           </p>
         )}
-
-        <div className="grid gap-4">
-          {teeTimes.map((t, idx) => (
-            <div key={idx} className="bg-white p-4 rounded-xl shadow flex justify-between items-center">
-              <span className="text-lg font-semibold">{t.time}</span>
-              {loggedIn ? (
-                <Button>Book</Button>
-              ) : (
-                <Button disabled>Book</Button>
-              )}
-            </div>
-          ))}
-        </div>
+        <TeeTimeList
+          teeTimes={teeTimes}
+          onBook={bookTime}
+          loggedIn={loggedIn}
+        />
       </div>
     </div>
   );
 }
+
