@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 
-export default function Navbar({ loggedIn, setLoggedIn }) {
+export default function Navbar({ loggedIn, setLoggedIn, username }) {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4 py-2">
       <div className="container-fluid">
@@ -30,13 +30,16 @@ export default function Navbar({ loggedIn, setLoggedIn }) {
             {loggedIn && (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/manage">Manage Tee Times</Link>
+                  <Link className="nav-link" to={`/manage`}>Manage Tee Times</Link>
                 </li>
                 <li className="nav-item">
                 <Button
                     variant="danger"
                     className="ms-2"
-                    onClick={() => setLoggedIn(false)}
+                    onClick={() => {
+                      setLoggedIn(false);
+                      setUsername("");
+                    }}
                 >
                     Log Out
                   </Button>

@@ -1,16 +1,17 @@
 import React from "react";
 import TeeTimeItem from "./TeeTimeItem";
 
-export default function TeeTimeList({ teeTimes, onBook, loggedIn }) {
+export default function TeeTimeList({ teeTimes, loggedIn, username }) {
   return (
     <div className="tee-time-list">
-      {teeTimes.map((tee, index) => (
+      {teeTimes.map((tee) => (
         <TeeTimeItem
-          key={index}
+          key={tee.id}
+          id={tee.id}
           time={tee.time}
           booked={tee.booked}
-          onBook={() => onBook(index)}
           loggedIn={loggedIn}
+          username={username}
         />
       ))}
     </div>

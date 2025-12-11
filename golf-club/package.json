@@ -1,8 +1,8 @@
 {
   "homepage": "https://cs571-f25.github.io/p136/",
   "name": "golf-club",
-  "private": true,
-  "version": "0.0.0",
+  "private": false,
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

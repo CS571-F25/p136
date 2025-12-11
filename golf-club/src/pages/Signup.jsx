@@ -1,11 +1,11 @@
-import { useState } from "react";
+import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 
 export default function Signup({ setLoggedIn }) {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -13,16 +13,35 @@ export default function Signup({ setLoggedIn }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError("");
 
-    // Check if passwords match
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
+    if (!username || !password) {
+      setError("You must provide both a username and password!");
       return;
     }
 
-    // For now, just sign up any email/password
+    if (password !== confirmPassword) {
+      setError("Your passwords do not match!");
+      return;
+    }
+
+    const storedUsers = JSON.parse(sessionStorage.getItem("golfUsers") || "[]");
+
+    if (storedUsers.some(u => u.username === username)) {
+      setError("That username is already taken!");
+      return;
+    }
+
+    const updatedUsers = [...storedUsers, { username, password }];
+    sessionStorage.setItem("golfUsers", JSON.stringify(updatedUsers));
+
+    // Log the user in immediately
     setLoggedIn(true);
-    navigate("/"); // redirect to home after signup
+    sessionStorage.setItem("loggedIn", "true");
+    setUsername(username); 
+
+    alert("Sign up successful!");
+    navigate("/");
   };
 
   return (
@@ -33,13 +52,13 @@ export default function Signup({ setLoggedIn }) {
         {error && <Alert variant="danger">{error}</Alert>}
 
         <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="formEmail">
-            <Form.Label>Email</Form.Label>
+          <Form.Group className="mb-3" controlId="formUsername">
+            <Form.Label>Username</Form.Label>
             <Form.Control
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
           </Form.Group>
